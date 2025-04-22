@@ -1,5 +1,6 @@
 import streamlit as st
 from db import update_user, fetch_user
+import base64
 
 st.title("🛠️ Dashboard - Edit User Info")
 
@@ -13,11 +14,21 @@ else:
 with st.form("user_form"):
     name = st.text_input("Name", old_name)
     phone = st.text_input("Phone Number", old_phone)
-    image = st.text_input("Image URL", old_image)
+
+    # 👇 Image uploader
+    uploaded_file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
+
     submitted = st.form_submit_button("Save")
 
     if submitted:
-        update_user(name, phone, image)
-        st.success("User data updated successfully!")
+        if uploaded_file is not None:
+            # Convert uploaded file to base64
+            image_data = uploaded_file.read()
+            encoded_image = base64.b64encode(image_data).decode("utf-8")
+        else:
+            # If no new image is uploaded, keep old one
+            encoded_image = old_image
 
+        update_user(name, phone, encoded_image)
+        st.success("User data updated successfully!")
 
