@@ -19,3 +19,5 @@ with st.form("user_form"):
     if submitted:
         update_user(name, phone, image)
         st.success("User data updated successfully!")
+
+
